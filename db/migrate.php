@@ -137,7 +137,7 @@ function sga_bulk_course_custom_field()
     $linguagens = json_encode([
         "required" => "0",
         "uniquevalues" => "0",
-        "options" => \local_suap\get_languages(),
+        "options" => get_languages(),
         "defaultvalue" => "pt_br",
         "locked" => "0",
         "visibility" => "2"
