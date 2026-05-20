@@ -27,8 +27,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'tool_sga';
-$plugin->release = '4.5.006';
-$plugin->version = 20260423000;
+$plugin->release = '4.5.007';
+$plugin->version = 20260520007;
 $plugin->maturity = MATURITY_STABLE;
 
 $plugin->requires = 2024100710; # 3.9.25, php >= 7.4
