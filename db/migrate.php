@@ -174,8 +174,8 @@ function sga_bulk_user_custom_field()
     sga_save_user_custom_field($cid, 'curso_codigo', 'Código do curso');
     sga_save_user_custom_field($cid, 'curso_descricao', 'Descrição do curso');
 
-    sga_save_user_custom_field($cid, 'turma_id', 'ID da turma');
-    sga_save_user_custom_field($cid, 'turma_codigo', 'Código da turma');
+    sga_save_user_custom_field($cid, 'turma_id', 'ID da última turma');
+    sga_save_user_custom_field($cid, 'turma_codigo', 'Código da última turma');
 
     sga_save_user_custom_field($cid, 'polo_id', 'ID do polo');
     sga_save_user_custom_field($cid, 'polo_nome', 'Nome do polo');
