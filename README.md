@@ -2,6 +2,19 @@
 
 > Reescrever
 
+Documentação: publicada em https://suap-ava-suite.github.io/moodle-tool_sga/ (gerada
+automaticamente a cada push em `docs/` via `.github/workflows/docs.yml`, usando o tema Sphinx
+[moodle-docs-theme](https://pypi.org/project/moodle-docs-theme/)). Para gerar localmente:
+
+```bash
+pip install sphinx moodle-docs-theme
+sphinx-build -W -b html docs docs/_build/html
+```
+
+Páginas: `docs/visao-geral.rst`, `docs/instalacao.rst`, `docs/sincronizacao-envio.rst`,
+`docs/sincronizacao-notas.rst`, `docs/campos-customizados.rst`,
+`docs/painel-administrativo.rst`, `docs/desenvolvimento.rst`.
+
 ## curl example
 
 ````bash
