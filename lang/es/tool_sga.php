@@ -29,23 +29,23 @@ $string['pluginname'] = 'Integrador SGA';
 $string['sga:adminview'] = 'Ver el admin del Integrador SGA';
 
 
-# Integrador SGA
+// Integrador SGA
 $string['integration_token_header'] = 'Integrador SGA';
 $string['integration_token_header_desc'] = 'Qué token utilizará el Integrador SGA para autenticarse en esta instalación de Moodle';
 $string["integration_token"] = 'Token de autenticación del Integrador SGA';
 $string["integration_token_desc"] = 'Qué token utilizará el Integrador SGA para autenticarse en esta instalación de Moodle';
 
-# Enviar sincronización
+// Enviar sincronización
 $string["integration_callback"] = 'URL de callback del Integrador SGA';
 $string["integration_callback_desc"] = 'Cuál es la URL de callback del Integrador SGA para esta instalación de Moodle';
 
-# Descargar notas
+// Descargar notas
 $string["notes_to_sync_header"] = 'Notas a sincronizar';
 $string["notes_to_sync_header_desc"] = 'Configuraciones para la sincronización de notas';
 $string["notes_to_sync"] = 'Notas a sincronizar';
 $string["notes_to_sync_desc"] = "Notas a sincronizar; para el SUAP, por ejemplo, suele ser: 'N1', 'N2', 'N3', 'N4', 'NAF'.";
 
-# Nuevo usuario y nuevos valores predeterminados de inscripción
+// Nuevo usuario y nuevos valores predeterminados de inscripción
 $string['user_and_enrolment_header'] = 'Nuevo usuario y nuevos valores predeterminados de inscripción';
 $string['user_and_enrolment_header_desc'] = 'Configuraciones predeterminadas de la categoría principal';
 

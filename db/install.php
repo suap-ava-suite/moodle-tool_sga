@@ -28,7 +28,6 @@ require_once(__DIR__ . '/migrate.php');
 /**
  * Custom code to be run on installing the plugin.
  */
-function xmldb_tool_sga_install()
-{
+function xmldb_tool_sga_install() {
     return \tool_sga\tool_sga_migrate(0);
 }

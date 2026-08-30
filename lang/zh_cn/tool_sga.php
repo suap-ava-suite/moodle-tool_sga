@@ -29,23 +29,23 @@ $string['pluginname'] = 'SGA 集成器';
 $string['sga:adminview'] = '查看 SGA 集成器管理';
 
 
-# SGA 集成器
+// SGA 集成器
 $string['integration_token_header'] = 'SGA 集成器';
 $string['integration_token_header_desc'] = 'SGA 集成器用于在此 Moodle 安装中进行身份验证的令牌';
 $string["integration_token"] = 'SGA 集成器身份验证令牌';
 $string["integration_token_desc"] = 'SGA 集成器用于在此 Moodle 安装中进行身份验证的令牌';
 
-# 发送同步
+// 发送同步
 $string["integration_callback"] = 'SGA 集成器回调 URL';
 $string["integration_callback_desc"] = '此 Moodle 安装的 SGA 集成器回调 URL 是什么';
 
-# 下载成绩
+// 下载成绩
 $string["notes_to_sync_header"] = '待同步成绩';
 $string["notes_to_sync_header_desc"] = '成绩同步设置';
 $string["notes_to_sync"] = '待同步成绩';
 $string["notes_to_sync_desc"] = "待同步成绩，例如对于 SUAP 通常是：'N1'、'N2'、'N3'、'N4'、'NAF'。";
 
-# 新用户和新注册默认设置
+// 新用户和新注册默认设置
 $string['user_and_enrolment_header'] = '新用户和新注册默认设置';
 $string['user_and_enrolment_header_desc'] = '主分类的默认设置';
 

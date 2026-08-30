@@ -1,5 +1,6 @@
 <?php
 // This file is part of "Moodle SGA Integration"
+//
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -33,16 +34,14 @@ require_once("$CFG->dirroot/message/externallib.php");
 require_once("$CFG->dirroot/message/output/popup/externallib.php");
 
 
-function get_last_sort_order($tablename)
-{
+function get_last_sort_order($tablename) {
     global $DB;
     $l = $DB->get_record_sql('SELECT coalesce(max(sortorder), 0) + 1 as sortorder from {' . $tablename . '}');
     return $l->sortorder;
 }
 
 
-function get_or_create($tablename, $keys, $values)
-{
+function get_or_create($tablename, $keys, $values) {
     global $DB;
     $record = $DB->get_record($tablename, $keys);
     if (!$record) {
@@ -53,8 +52,7 @@ function get_or_create($tablename, $keys, $values)
 }
 
 
-function create_or_update($tablename, $keys, $allways, $updates = [], $insert = [])
-{
+function create_or_update($tablename, $keys, $allways, $updates = [], $insert = []) {
     global $DB;
     $record = $DB->get_record($tablename, $keys);
     if ($record) {
@@ -69,24 +67,20 @@ function create_or_update($tablename, $keys, $allways, $updates = [], $insert = 
     return $record;
 }
 
-function dienow($message, $code)
-{
+function dienow($message, $code) {
     http_response_code($code);
     die(json_encode(["message" => $message, "code" => $code]));
 }
 
-function config($name)
-{
+function config($name) {
     return get_config('tool_sga', $name);
 }
 
-function aget($array, $key, $default = null)
-{
+function aget($array, $key, $default = null) {
     return \key_exists($key, $array) ? $array[$key] : $default;
 }
 
-function get_recordset_as_json($sql, $params)
-{
+function get_recordset_as_json($sql, $params) {
     global $DB;
 
     $result = "[";
@@ -98,8 +92,7 @@ function get_recordset_as_json($sql, $params)
     return $result . "]";
 }
 
-function get_recordset_as_array($sql, $params)
-{
+function get_recordset_as_array($sql, $params) {
     global $DB;
 
     $result = [];

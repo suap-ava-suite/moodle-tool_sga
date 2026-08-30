@@ -28,7 +28,7 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once(__DIR__.'/adminlib.php');
+require_once(__DIR__ . '/adminlib.php');
 
 if ($hassiteconfig) {
     $ADMIN->add('server', new sga_admin_settingspage($ADMIN->fulltree));

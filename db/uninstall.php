@@ -28,8 +28,7 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * Custom uninstallation procedure.
  */
-function xmldb_tool_sga_uninstall()
-{
+function xmldb_tool_sga_uninstall() {
 
     return true;
 }

@@ -1,16 +1,31 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
 /** This file is part of "Moodle SGA Integration"
- * 
+ *
  * Moodle is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Moodle is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
  */
@@ -42,7 +57,6 @@ function exception_handler($exception) {
 
 
 class service {
-
     function authenticate() {
         $sync_up_auth_token = config('integration_token');
 
@@ -57,16 +71,14 @@ class service {
         }
     }
 
-    function call()
-    {
+    function call() {
         $this->authenticate();
         $data = $this->do_call();
         header('Content-Type: application/json; charset=utf-8');
         echo json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     }
 
-    function do_call()
-    {
+    function do_call() {
         throw new \Exception("Não implementado", 501);
     }
 }

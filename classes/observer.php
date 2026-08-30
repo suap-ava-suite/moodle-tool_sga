@@ -27,18 +27,15 @@ defined('MOODLE_INTERNAL') || die();
 
 class tool_sga_observer
 {
-    public static function user_enrolment_created(\core\event\user_enrolment_created $event)
-    {
+    public static function user_enrolment_created(\core\event\user_enrolment_created $event) {
         global $DB;
     }
 
-    public static function user_enrolment_deleted(\core\event\user_enrolment_deleted $event)
-    {
+    public static function user_enrolment_deleted(\core\event\user_enrolment_deleted $event) {
         global $DB;
     }
 
-    public static function user_enrolment_updated(\core\event\user_enrolment_updated $event)
-    {
+    public static function user_enrolment_updated(\core\event\user_enrolment_updated $event) {
         global $DB;
     }
 }
