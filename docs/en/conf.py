@@ -1,4 +1,4 @@
-# docs/conf.py
+# docs/en/conf.py
 import os
 import sys
 
@@ -7,6 +7,7 @@ import moodle_docs_theme
 sys.path.insert(0, os.path.abspath(".."))
 
 project = "tool_sga"
+language = "en"
 
 extensions = [
     "sphinx.ext.githubpages",
@@ -24,20 +25,20 @@ html_static_path = ["_static"]
 
 html_theme_options = {
     "project_name": "tool_sga",
-    "tagline": "Integração do Moodle com o SGA: sincronização de cursos, turmas, usuários, "
-    "inscrições e notas via API HTTP",
+    "tagline": "Moodle integration with SGA: synchronizing courses, classes, users, "
+    "enrolments and grades via an HTTP API",
     "github_url": "https://github.com/suap-ava-suite/moodle-tool_sga",
     "github_repo": "suap-ava-suite/moodle-tool_sga",
     "github_version": "main",
-    "doc_path": "docs/",
+    "doc_path": "docs/en/",
     "show_edit_on_github": True,
     "enable_dark_mode": True,
     "navigation_links": (
-        "Início|index, Visão geral|visao-geral, Instalação|instalacao, "
-        "Sincronização de envio|sincronizacao-envio, "
-        "Sincronização de notas|sincronizacao-notas, "
-        "Campos customizados|campos-customizados, "
-        "Painel administrativo|painel-administrativo, "
-        "Desenvolvimento|desenvolvimento"
+        "Home|index, Overview|visao-geral, Installation|instalacao, "
+        "Upload synchronization|sincronizacao-envio, "
+        "Grade synchronization|sincronizacao-notas, "
+        "Custom fields|campos-customizados, "
+        "Administrative panel|painel-administrativo, "
+        "Development|desenvolvimento, 🌐 Português (PT-BR)|../pt-br/index.html"
     ),
 }
