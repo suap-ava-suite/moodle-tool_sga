@@ -27,8 +27,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'tool_sga';
-$plugin->release = '4.5.018';
-$plugin->version = 2026_08_30_018;
+$plugin->release = '4.5.019';
+$plugin->version = 2026_08_30_019;
 $plugin->maturity = MATURITY_STABLE;
 
-$plugin->requires = 2024100710; # Moodle 4.5, php >= 8.1
+$plugin->requires = 2024100710; // Moodle 4.5, php >= 8.1

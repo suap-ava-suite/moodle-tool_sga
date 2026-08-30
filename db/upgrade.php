@@ -27,7 +27,6 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__ . '/migrate.php');
 
-function xmldb_tool_sga_upgrade($oldversion)
-{
+function xmldb_tool_sga_upgrade($oldversion) {
     return \tool_sga\tool_sga_migrate($oldversion);
 }

@@ -36,5 +36,5 @@ $observers = [
     [
         'eventname'   => '\core\event\user_enrolment_updated',
         'callback'    => 'tool_sga_observer::user_enrolment_updated',
-    ]
+    ],
 ];

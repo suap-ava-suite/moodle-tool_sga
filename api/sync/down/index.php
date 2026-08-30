@@ -40,9 +40,7 @@ require_once("servicelib.php");
 
 class sync_down_grades_service extends service
 {
-
-    function do_call()
-    {
+    function do_call() {
         global $CFG, $DB;
         $notes_to_sync = config('notes_to_sync') ?: "'N1', 'N2', 'N3', 'N4', 'NAF'";
         try {

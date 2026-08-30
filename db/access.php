@@ -24,13 +24,13 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$capabilities = array(
+$capabilities = [
     'tool/sga:adminview' => [
         'riskbitmask' => 0,
         'captype' => 'view',
         'contextlevel' => CONTEXT_SYSTEM,
         'archetypes' => [
-            'manager' => CAP_ALLOW
-        ]
-    ]
-);
+            'manager' => CAP_ALLOW,
+        ],
+    ],
+];

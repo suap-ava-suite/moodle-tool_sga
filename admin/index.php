@@ -96,15 +96,14 @@ $paginacaoVariada = [];
 if ($numeroTotalDePaginas < $primeirasPaginas + $ultimasPaginas) {
     $paginacaoVariada = range($paginaInicio, $paginaFim);
 } else {
-
     if ($paginaAtual < $numeroTotalDePaginas - 3 && $paginaAtual >= 5) {
         echo ("TO AQUI");
         $mergeUnique = array_unique(array_merge($primeirosCinco, ['...'], $ultimosTres));
         $paginacaoVariada = array_merge(['...'], $mergeUnique);
-    } elseif ($paginaAtual < $numeroTotalDePaginas - 3) {
+    } else if ($paginaAtual < $numeroTotalDePaginas - 3) {
         $mergeUnique = array_unique(array_merge($primeirosCinco, ['...'], $ultimosTres));
         $paginacaoVariada = array_merge($mergeUnique);
-    } elseif ($paginaAtual >= 5) {
+    } else if ($paginaAtual >= 5) {
         $mergeUnique = array_unique(array_merge($primeirosCinco, $ultimosTres));
         $paginacaoVariada = array_merge(['...'], $mergeUnique);
     } else {
@@ -112,23 +111,21 @@ if ($numeroTotalDePaginas < $primeirasPaginas + $ultimasPaginas) {
     }
 
     // if($paginaAtual >= 5){
-    //     //  $paginacaoVariadaInicio = '...'; 
-    //     //  $mergePaginaPrimeirosCincoInicio[] = array_push($primeirosCinco, $paginacaoVariadaInicio);
-    //     // foreach($mergePaginaPrimeirosCincoInicio as $t){
-    //     //     echo($t.'-');
-    //     // }
-
-    //     //  $paginacaoInicio= array_unique(array_merge($mergePaginaPrimeirosCincoInicio, $ultimosTres));
-    //     //  $paginacaoVariada = $mergePaginaPrimeirosCincoInicio; 
-    //     $mergeUnique= array_unique(array_merge($primeirosCinco,$ultimosTres));
-
-
-
-    //     $paginacaoVariada = array_merge(['...'], $mergeUnique);
-    //     echo("OPA");
+    // $paginacaoVariadaInicio = '...';
+    // $mergePaginaPrimeirosCincoInicio[] = array_push($primeirosCinco, $paginacaoVariadaInicio);
+    // foreach($mergePaginaPrimeirosCincoInicio as $t){
+    // echo($t.'-');
     // }
 
+    // $paginacaoInicio= array_unique(array_merge($mergePaginaPrimeirosCincoInicio, $ultimosTres));
+    // $paginacaoVariada = $mergePaginaPrimeirosCincoInicio;
+    // $mergeUnique= array_unique(array_merge($primeirosCinco,$ultimosTres));
 
+
+
+    // $paginacaoVariada = array_merge(['...'], $mergeUnique);
+    // echo("OPA");
+    // }
 }
 
 $templatecontext = [
