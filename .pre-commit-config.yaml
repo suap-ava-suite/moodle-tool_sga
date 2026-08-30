@@ -1,0 +1,11 @@
+# Pre-commit configuration for tool_sga
+# See https://pre-commit.com for more information
+repos:
+  - repo: local
+    hooks:
+      - id: act-test
+        name: Validar testes com act
+        entry: act -j test --matrix php:8.1 --matrix database:pgsql --matrix moodle-branch:MOODLE_403_STABLE
+        language: system
+        pass_filenames: false
+        always_run: true
