@@ -1,32 +1,34 @@
 # tool_sga
 
-> Reescrever
+O `tool_sga` (Integrador SGA) é um plugin de administração (`admin/tool`) para o Moodle que
+expõe uma API HTTP usada pelo SGA (Sistema de Gestão Acadêmica) para manter o Moodle
+sincronizado: cursos, turmas, usuários, inscrições e notas.
 
-Documentação: publicada em https://suap-ava-suite.github.io/moodle-tool_sga/ (gerada
-automaticamente a cada push em `docs/` via `.github/workflows/docs.yml`, usando o tema Sphinx
-[moodle-docs-theme](https://pypi.org/project/moodle-docs-theme/)). Para gerar localmente:
+`tool_sga` (SGA Integrator) is a Moodle admin tool plugin that exposes an HTTP API used by the
+SGA (Academic Management System) to keep Moodle synchronized: courses, classes, users,
+enrolments and grades.
+
+## Documentação / Documentation
+
+- 🇧🇷 **Português (pt-BR)**: [https://suap-ava-suite.github.io/moodle-tool_sga/pt-br/](https://suap-ava-suite.github.io/moodle-tool_sga/pt-br/)
+- 🇺🇸 **English (en)**: [https://suap-ava-suite.github.io/moodle-tool_sga/en/](https://suap-ava-suite.github.io/moodle-tool_sga/en/)
+
+## Exemplo de uso da API
 
 ```bash
-pip install sphinx moodle-docs-theme
-sphinx-build -W -b html docs docs/_build/html
+curl -X POST -H "Authentication: Token changeme" \
+     -d @admin/tool/sga/api/examples/sync.up.full.request.json \
+     http://moodle/admin/tool/sga/api/sync/up/
 ```
 
-Páginas: `docs/visao-geral.rst`, `docs/instalacao.rst`, `docs/sincronizacao-envio.rst`,
-`docs/sincronizacao-notas.rst`, `docs/campos-customizados.rst`,
-`docs/painel-administrativo.rst`, `docs/desenvolvimento.rst`.
+Veja a documentação completa para detalhes de autenticação, formato do payload e o endpoint de
+sincronização de notas.
 
-## curl example
-
-````bash
-curl -X POST -H "Authentication: Token changeme" -d @admin/tool/sga/api/examples/sync.up.full.request.json http://moodle/admin/tool/sga/api/sync/up/
-
-```
-
-## Tipo de commits
+## Convenção de commits
 
 - `feat:` novas funcionalidades.
 - `fix:` correção de bugs.
-- `refactor:` refatoração ou performances (sem impacto em lógica).
+- `refactor:` refatoração ou performance (sem impacto em lógica).
 - `style:` estilo ou formatação de código (sem impacto em lógica).
 - `test:` testes.
 - `doc:` documentação no código ou do repositório.
