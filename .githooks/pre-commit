@@ -1,4 +1,4 @@
 #!/bin/sh
 # Pre-commit hook for tool_sga: force act execution before commit
 echo "Executando testes locais com act antes do commit..."
-act -j test --matrix php:8.1 --matrix database:pgsql --matrix moodle-branch:MOODLE_403_STABLE --reuse
+act -j test --matrix php:8.3 --matrix database:pgsql --matrix moodle-branch:MOODLE_405_STABLE --reuse
