@@ -25,31 +25,20 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['pluginname'] = 'Integrador SGA';
-$string['sga:adminview'] = 'Ver o admin do Integrador SGA';
-
-
-// Integrador SGA
-$string['integration_token_header'] = 'Integrador SGA';
-$string['integration_token_header_desc'] = 'Qual será o token utilizado pelo Integrador SGA para se autenticar nesta instalação do Moodle';
-$string["integration_token"] = 'Integrador SGA auth token';
-$string["integration_token_desc"] = 'Qual será o token utilizado pelo Integrador SGA para se autenticar nesta instalação do Moodle';
-
-// Enviar sincronização
-$string["integration_callback"] = 'URL de callback do Integrador SGA';
-$string["integration_callback_desc"] = 'Qual a URL de callback do Integrador SGA para esta instalação do Moodle';
-
-// Baixar notas
-$string["notes_to_sync_header"] = 'Notas de sincronizar';
-$string["notes_to_sync_header_desc"] = 'Configurações para sincronização de notas';
-$string["notes_to_sync"] = 'Notas a sincronizar';
-$string["notes_to_sync_desc"] = "Notas a sincronizar, para o SUAP, por exemplo, costuma ser: 'N1', 'N2', 'N3' , 'N4', 'NAF'.";
-
-// New user and new enrolment defaults
-$string['user_and_enrolment_header'] = 'Novo usuário e novos padrões de inscrição';
-$string['user_and_enrolment_header_desc'] = 'Configurações padrão da categoria principal';
-
 $string["default_user_preferences"] = 'Preferências padrão do usuário';
 $string["default_user_preferences_desc"] = 'Todo novo usuário (aluno ou professor) terá essas preferências. Use uma linha por preferência. Como um arquivo .ini.';
-
+$string["integration_callback"] = 'URL de callback do Integrador SGA';
+$string["integration_callback_desc"] = 'Qual a URL de callback do Integrador SGA para esta instalação do Moodle';
+$string["integration_token"] = 'Integrador SGA auth token';
+$string["integration_token_desc"] = 'Qual será o token utilizado pelo Integrador SGA para se autenticar nesta instalação do Moodle';
+$string['integration_token_header'] = 'Integrador SGA';
+$string['integration_token_header_desc'] = 'Qual será o token utilizado pelo Integrador SGA para se autenticar nesta instalação do Moodle';
+$string["notes_to_sync"] = 'Notas a sincronizar';
+$string["notes_to_sync_desc"] = "Notas a sincronizar, para o SUAP, por exemplo, costuma ser: 'N1', 'N2', 'N3' , 'N4', 'NAF'.";
+$string["notes_to_sync_header"] = 'Notas de sincronizar';
+$string["notes_to_sync_header_desc"] = 'Configurações para sincronização de notas';
+$string['pluginname'] = 'Integrador SGA';
+$string['sga:adminview'] = 'Ver o admin do Integrador SGA';
 $string["sync_up_enrolments_task"] = 'Integrador SGA: Sincronizar as inscrições em background';
+$string['user_and_enrolment_header'] = 'Novo usuário e novos padrões de inscrição';
+$string['user_and_enrolment_header_desc'] = 'Configurações padrão da categoria principal';

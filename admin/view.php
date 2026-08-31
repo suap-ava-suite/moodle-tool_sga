@@ -18,13 +18,14 @@
  * SGA Integration
  *
  * @package     tool_sga
- * @category    tool
+ * @category    admin
  * @copyright   2025 Kelson Medeiros <kelsoncm@gmail.com>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 namespace tool_sga\admin;
 
+// phpcs:ignore moodle.Files.RequireLogin.Missing -- Access is restricted by is_siteadmin() below.
 require_once(\dirname(\dirname(\dirname(__DIR__))) . '/config.php');
 
 $PAGE->set_url(new \moodle_url('/admin/tool/sga/admin/view.php'));

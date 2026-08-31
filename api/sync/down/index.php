@@ -28,21 +28,34 @@
 
 namespace tool_sga;
 
+// phpcs:ignore moodle.Files.RequireLogin.Missing -- Authentication is token-based, performed by service::authenticate().
+require_once('../../../config.php');
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require_once('../../../config.php');
 require_once("../locallib.php");
 require_once("servicelib.php");
 
-// Link de acesso (exemplo): http://ava/admin/tool/sga/api/sync_down_grades.php?codigo_diario=20231.1.15806.1E.TEC.1386
+// Link de acesso (exemplo): http://ava/admin/tool/sga/api/sync_down_grades.php?codigo_diario=20231.1.15806.1E.TEC.1386.
 
+/**
+ * Service that returns the grades of a diario for the SGA integration.
+ *
+ * @package     tool_sga
+ * @copyright   2020 Kelson Medeiros <kelsoncm@gmail.com>
+ * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class sync_down_grades_service extends service
 {
-    function do_call() {
+    /**
+     * Returns the grades of the diario given in the "diario_id" GET parameter.
+     *
+     * @return array the students and their grades.
+     */
+    public function do_call() {
         global $CFG, $DB;
-        $notes_to_sync = config('notes_to_sync') ?: "'N1', 'N2', 'N3', 'N4', 'NAF'";
+        $notestosync = config('notes_to_sync') ?: "'N1', 'N2', 'N3', 'N4', 'NAF'";
         try {
             $notas = $DB->get_records_sql("
                 WITH a AS (
@@ -63,11 +76,11 @@ class sync_down_grades_service extends service
                                 SELECT   jsonb_object_agg(gi.idnumber::text, gg.finalgrade)
                                 FROM     {grade_items} gi
                                             inner join {grade_grades} gg on (gg.itemid=gi.id AND gg.userid = a.id_usuario)
-                                WHERE    gi.idnumber IN ($notes_to_sync)
+                                WHERE    gi.idnumber IN ($notestosync)
                                 AND    gi.courseid = a.id_curso
                         ) notas
                 FROM     a
-                ORDER BY a.nome_completo           
+                ORDER BY a.nome_completo
             ", [$_GET['diario_id']]);
             $result = array_values($notas);
             foreach ($result as $key => $aluno) {
@@ -80,7 +93,9 @@ class sync_down_grades_service extends service
             die("error");
             http_response_code(500);
             if ($ex->getMessage() == "Data submitted is invalid (value: Data submitted is invalid)") {
-                echo json_encode(["error" => ["message" => "Ocorreu uma inconsistência no servidor do AVA. Este erro é conhecido e a solução dele já está sendo estudado pela equipe de desenvolvimento. Favor tentar novamente em 5 minutos."]]);
+                $errormessage = "Ocorreu uma inconsistência no servidor do AVA. Este erro é conhecido e a solução "
+                    . "dele já está sendo estudado pela equipe de desenvolvimento. Favor tentar novamente em 5 minutos.";
+                echo json_encode(["error" => ["message" => $errormessage]]);
             } else {
                 echo json_encode(["error" => ["message" => $ex->getMessage()]]);
             }

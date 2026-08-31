@@ -22,19 +22,41 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
-
+/**
+ * Event observer for the tool_sga plugin.
+ *
+ * @package    tool_sga
+ * @copyright  2025 kelson Medeiros {@link https://github.com/kelsoncm}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class tool_sga_observer
 {
+    /**
+     * Handles the user_enrolment_created event.
+     *
+     * @param \core\event\user_enrolment_created $event the triggered event.
+     * @return void
+     */
     public static function user_enrolment_created(\core\event\user_enrolment_created $event) {
         global $DB;
     }
 
+    /**
+     * Handles the user_enrolment_deleted event.
+     *
+     * @param \core\event\user_enrolment_deleted $event the triggered event.
+     * @return void
+     */
     public static function user_enrolment_deleted(\core\event\user_enrolment_deleted $event) {
         global $DB;
     }
 
+    /**
+     * Handles the user_enrolment_updated event.
+     *
+     * @param \core\event\user_enrolment_updated $event the triggered event.
+     * @return void
+     */
     public static function user_enrolment_updated(\core\event\user_enrolment_updated $event) {
         global $DB;
     }
