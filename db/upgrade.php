@@ -27,6 +27,12 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__ . '/migrate.php');
 
+/**
+ * Executes the plugin upgrade steps.
+ *
+ * @param int $oldversion the version we are upgrading from.
+ * @return bool result of the upgrade process.
+ */
 function xmldb_tool_sga_upgrade($oldversion) {
     return \tool_sga\tool_sga_migrate($oldversion);
 }

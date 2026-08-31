@@ -24,6 +24,8 @@
 
 namespace tool_sga\event;
 
+defined('MOODLE_INTERNAL') || die();
+
 $observers = [
     [
         'eventname'   => '\core\event\user_enrolment_created',

@@ -23,14 +23,5 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
-$tasks = [
-    // [
-    // 'classname' => 'tool_sga\task\sync_up_enrolments_task',
-    // 'blocking' => 1,
-    // 'minute' => '*/1',
-    // 'hour' => '*',
-    // 'day' => '*',
-    // 'month' => '*',
-    // 'dayofweek' => '*',
-    // ],
-];
+// No scheduled tasks are registered at the moment.
+$tasks = [];

@@ -32,42 +32,107 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/admin/tool/sga/locallib.php');
 
+/**
+ * Returns the list of installed language codes as a newline-separated string.
+ *
+ * @return string the language codes, one per line.
+ */
 function get_languages() {
     $languages = \get_string_manager()->get_list_of_translations();
     $options = array_keys($languages);
     return implode("\n", $options);
 }
 
-
+/**
+ * Gets or creates a course custom field category.
+ *
+ * @param string $name the category name.
+ * @return int the category id.
+ */
 function sga_save_course_custom_category($name) {
     global $DB;
 
     return \tool_sga\get_or_create(
         'customfield_category',
         ['name' => $name, 'component' => 'core_course', 'area' => 'course'],
-        ['sortorder' => \tool_sga\get_last_sort_order('customfield_category'), 'itemid' => 0, 'contextid' => 1, 'descriptionformat' => 0, 'timecreated' => time(), 'timemodified' => time()]
+        [
+            'sortorder' => \tool_sga\get_last_sort_order('customfield_category'),
+            'itemid' => 0,
+            'contextid' => 1,
+            'descriptionformat' => 0,
+            'timecreated' => time(),
+            'timemodified' => time(),
+        ]
     )->id;
 }
 
-
-function sga_save_course_custom_field($categoryid, $shortname, $name, $type = 'text', $configdata = '{"required":"0","uniquevalues":"0","displaysize":50,"maxlength":4000,"ispassword":"0","link":"","locked":"0","visibility":"0"}') {
+/**
+ * Gets or creates a course custom field.
+ *
+ * @param int $categoryid the custom field category id.
+ * @param string $shortname the field shortname.
+ * @param string $name the field name.
+ * @param string $type the field type.
+ * @param string $configdata the field JSON-encoded configuration.
+ * @return \stdClass the custom field record.
+ */
+function sga_save_course_custom_field(
+    $categoryid,
+    $shortname,
+    $name,
+    $type = 'text',
+    $configdata = '{"required":"0","uniquevalues":"0","displaysize":50,"maxlength":4000,"ispassword":"0",'
+    . '"link":"","locked":"0","visibility":"0"}'
+) {
     return \tool_sga\get_or_create(
         'customfield_field',
         ['shortname' => $shortname],
-        ['categoryid' => $categoryid, 'name' => $name, 'type' => $type, 'configdata' => $configdata, 'timecreated' => time(), 'timemodified' => time(), 'sortorder' => \tool_sga\get_last_sort_order('customfield_field')]
+        [
+            'categoryid' => $categoryid,
+            'name' => $name,
+            'type' => $type,
+            'configdata' => $configdata,
+            'timecreated' => time(),
+            'timemodified' => time(),
+            'sortorder' => \tool_sga\get_last_sort_order('customfield_field'),
+        ]
     );
 }
 
-
+/**
+ * Gets or creates a user custom profile field.
+ *
+ * @param int $categoryid the custom field category id.
+ * @param string $shortname the field shortname.
+ * @param string $name the field name.
+ * @param string $datatype the field data type.
+ * @param int $visible the field visibility.
+ * @param mixed $p1 the field param1.
+ * @param mixed $p2 the field param2.
+ * @return \stdClass the custom field record.
+ */
 function sga_save_user_custom_field($categoryid, $shortname, $name, $datatype = 'text', $visible = 1, $p1 = null, $p2 = null) {
     return \tool_sga\get_or_create(
         'user_info_field',
         ['shortname' => $shortname],
-        ['categoryid' => $categoryid, 'name' => $name, 'description' => $name, 'descriptionformat' => 2, 'datatype' => $datatype, 'visible' => $visible, 'param1' => $p1, 'param2' => $p2]
+        [
+            'categoryid' => $categoryid,
+            'name' => $name,
+            'description' => $name,
+            'descriptionformat' => 2,
+            'datatype' => $datatype,
+            'visible' => $visible,
+            'param1' => $p1,
+            'param2' => $p2,
+        ]
     );
 }
 
-
+/**
+ * Creates the tool_sga course custom field categories and fields.
+ *
+ * @return void
+ */
 function sga_bulk_course_custom_field() {
     global $DB;
     $campus = sga_save_course_custom_category('Campus');
@@ -99,11 +164,20 @@ function sga_bulk_course_custom_field() {
     sga_save_course_custom_field($componente, 'disciplina_tipo', 'Tipo da disciplina');
     sga_save_course_custom_field($componente, 'disciplina_sigla', 'Sigla da disciplina');
     sga_save_course_custom_field($componente, 'disciplina_descricao', 'Descrição da disciplina');
-    sga_save_course_custom_field($componente, 'disciplina_descricao_historico', 'Descrição da disciplina que constará no histórico');
+    sga_save_course_custom_field(
+        $componente,
+        'disciplina_descricao_historico',
+        'Descrição da disciplina que constará no histórico'
+    );
     sga_save_course_custom_field($componente, 'disciplina_periodo', 'Período da disciplina');
     sga_save_course_custom_field($componente, 'disciplina_optativo', 'Optativo da disciplina');
     sga_save_course_custom_field($componente, 'disciplina_qtd_avaliacoes', 'Quantidade de avaliações da disciplina');
-    sga_save_course_custom_field($componente, 'disciplina_is_seminario_estagio_docente', 'É disciplina de seminário ou estágio docente', 'checkbox');
+    sga_save_course_custom_field(
+        $componente,
+        'disciplina_is_seminario_estagio_docente',
+        'É disciplina de seminário ou estágio docente',
+        'checkbox'
+    );
     sga_save_course_custom_field($componente, 'disciplina_ch_presencial', 'Carga horária presencial da disciplina');
     sga_save_course_custom_field($componente, 'disciplina_ch_pratica', 'Carga horária prática da disciplina');
     sga_save_course_custom_field($componente, 'disciplina_ch_extensao', 'Carga horária de extensão da disciplina');
@@ -143,20 +217,29 @@ function sga_bulk_course_custom_field() {
     sga_save_course_custom_field($aberto, 'tem_certificado', 'Tem certificado', 'checkbox');
     sga_save_course_custom_field($aberto, 'linguagem_conteudo', 'Linguagem do conteúdo', 'select', $linguagens);
 
-    $integrador_ava = sga_save_course_custom_category('Integrador AVA');
-    sga_save_course_custom_field($integrador_ava, 'grupos_sincronizados', 'Grupos sincronizados pelo Integrador AVA');
+    $integradorava = sga_save_course_custom_category('Integrador AVA');
+    sga_save_course_custom_field($integradorava, 'grupos_sincronizados', 'Grupos sincronizados pelo Integrador AVA');
 
-    $painel_ava = sga_save_course_custom_category('Painel AVA');
-    sga_save_course_custom_field($painel_ava, 'sala_tipo', 'Tipo de sala');
-    sga_save_course_custom_field($painel_ava, 'turma_autoinscricao', 'Turma aceita autoinscrição', 'checkbox');
-    sga_save_course_custom_field($painel_ava, 'restricoes_de_autoinscricao', 'Restrições de autoinscrição');
+    $painelava = sga_save_course_custom_category('Painel AVA');
+    sga_save_course_custom_field($painelava, 'sala_tipo', 'Tipo de sala');
+    sga_save_course_custom_field($painelava, 'turma_autoinscricao', 'Turma aceita autoinscrição', 'checkbox');
+    sga_save_course_custom_field($painelava, 'restricoes_de_autoinscricao', 'Restrições de autoinscrição');
 }
 
 
+/**
+ * Creates the tool_sga user profile custom field category and fields.
+ *
+ * @return void
+ */
 function sga_bulk_user_custom_field() {
     global $DB;
 
-    $cid = \tool_sga\get_or_create('user_info_category', ['name' => 'SGA'], ['sortorder' => \tool_sga\get_last_sort_order('user_info_category')])->id;
+    $cid = \tool_sga\get_or_create(
+        'user_info_category',
+        ['name' => 'SGA'],
+        ['sortorder' => \tool_sga\get_last_sort_order('user_info_category')]
+    )->id;
 
     sga_save_user_custom_field($cid, 'email_google_classroom', 'E-mail @escolar (Google Classroom)');
     sga_save_user_custom_field($cid, 'email_academico', 'E-mail @academico (Microsoft)');
@@ -189,54 +272,210 @@ function sga_bulk_user_custom_field() {
     sga_save_user_custom_field($cid, 'last_login', 'JSON do último login', 'textarea', 0);
 }
 
+/**
+ * Creates the tool_sga database tables and populates the custom fields.
+ *
+ * @param int $oldversion the version we are upgrading from.
+ * @return bool true on success.
+ */
 function tool_sga_migrate($oldversion) {
     global $DB;
 
     $dbman = $DB->get_manager();
 
-    $sga_enrolment_to_sync = new \xmldb_table("sga_enrolment_to_sync");
-    if (!$dbman->table_exists($sga_enrolment_to_sync)) {
-        $sga_enrolment_to_sync->add_field("id", XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, XMLDB_SEQUENCE, null, null, null);
-        $sga_enrolment_to_sync->add_field("json", XMLDB_TYPE_TEXT, 'medium', XMLDB_UNSIGNED, null, null, null, null, null);
-        $sga_enrolment_to_sync->add_field("timecreated", XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, null, null, null);
-        $sga_enrolment_to_sync->add_field("processed", XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, null, null, null);
+    $sgaenrolmenttosync = new \xmldb_table("sga_enrolment_to_sync");
+    if (!$dbman->table_exists($sgaenrolmenttosync)) {
+        $sgaenrolmenttosync->add_field(
+            "id",
+            XMLDB_TYPE_INTEGER,
+            '10',
+            XMLDB_UNSIGNED,
+            XMLDB_NOTNULL,
+            XMLDB_SEQUENCE,
+            null,
+            null,
+            null
+        );
+        $sgaenrolmenttosync->add_field("json", XMLDB_TYPE_TEXT, 'medium', XMLDB_UNSIGNED, null, null, null, null, null);
+        $sgaenrolmenttosync->add_field(
+            "timecreated",
+            XMLDB_TYPE_INTEGER,
+            '10',
+            XMLDB_UNSIGNED,
+            XMLDB_NOTNULL,
+            null,
+            null,
+            null,
+            null
+        );
+        $sgaenrolmenttosync->add_field(
+            "processed",
+            XMLDB_TYPE_INTEGER,
+            '10',
+            XMLDB_UNSIGNED,
+            XMLDB_NOTNULL,
+            null,
+            null,
+            null,
+            null
+        );
 
-        $sga_enrolment_to_sync->add_key("primary", XMLDB_KEY_PRIMARY, ["id"], null, null);
+        $sgaenrolmenttosync->add_key("primary", XMLDB_KEY_PRIMARY, ["id"], null, null);
 
-        $dbman->create_table($sga_enrolment_to_sync);
+        $dbman->create_table($sgaenrolmenttosync);
     }
 
-    $sga_learning_path = new \xmldb_table("sga_learning_path");
-    if (!$dbman->table_exists($sga_learning_path)) {
-        $sga_learning_path->add_field("id", XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, XMLDB_SEQUENCE, null, null, null);
-        $sga_learning_path->add_field("name", XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, null, null, null);
-        $sga_learning_path->add_field("description", XMLDB_TYPE_TEXT, 'medium', XMLDB_UNSIGNED, null, null, null, null, null);
-        $sga_learning_path->add_field("descriptionformat", XMLDB_TYPE_INTEGER, '2', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, null, null, null);
-        $sga_learning_path->add_field("slug", XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, null, null, null);
-        $sga_learning_path->add_field("timecreated", XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, null, null, null);
-        $sga_learning_path->add_field("timemodified", XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, null, null, null);
-        $sga_learning_path->add_field("visible", XMLDB_TYPE_INTEGER, '1', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, null, null, null);
-        $sga_learning_path->add_field("sortorder", XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, null, null, null);
+    $sgalearningpath = new \xmldb_table("sga_learning_path");
+    if (!$dbman->table_exists($sgalearningpath)) {
+        $sgalearningpath->add_field(
+            "id",
+            XMLDB_TYPE_INTEGER,
+            '10',
+            XMLDB_UNSIGNED,
+            XMLDB_NOTNULL,
+            XMLDB_SEQUENCE,
+            null,
+            null,
+            null
+        );
+        $sgalearningpath->add_field("name", XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, null, null, null);
+        $sgalearningpath->add_field("description", XMLDB_TYPE_TEXT, 'medium', XMLDB_UNSIGNED, null, null, null, null, null);
+        $sgalearningpath->add_field(
+            "descriptionformat",
+            XMLDB_TYPE_INTEGER,
+            '2',
+            XMLDB_UNSIGNED,
+            XMLDB_NOTNULL,
+            null,
+            null,
+            null,
+            null
+        );
+        $sgalearningpath->add_field("slug", XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, null, null, null);
+        $sgalearningpath->add_field(
+            "timecreated",
+            XMLDB_TYPE_INTEGER,
+            '10',
+            XMLDB_UNSIGNED,
+            XMLDB_NOTNULL,
+            null,
+            null,
+            null,
+            null
+        );
+        $sgalearningpath->add_field(
+            "timemodified",
+            XMLDB_TYPE_INTEGER,
+            '10',
+            XMLDB_UNSIGNED,
+            XMLDB_NOTNULL,
+            null,
+            null,
+            null,
+            null
+        );
+        $sgalearningpath->add_field("visible", XMLDB_TYPE_INTEGER, '1', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, null, null, null);
+        $sgalearningpath->add_field(
+            "sortorder",
+            XMLDB_TYPE_INTEGER,
+            '10',
+            XMLDB_UNSIGNED,
+            XMLDB_NOTNULL,
+            null,
+            null,
+            null,
+            null
+        );
 
-        $sga_learning_path->add_key("primary", XMLDB_KEY_PRIMARY, ["id"], null, null);
-        $dbman->create_table($sga_learning_path);
+        $sgalearningpath->add_key("primary", XMLDB_KEY_PRIMARY, ["id"], null, null);
+        $dbman->create_table($sgalearningpath);
     }
 
-    $sga_learning_path_course = new \xmldb_table("sga_learning_path_course");
-    if (!$dbman->table_exists($sga_learning_path_course)) {
-        $sga_learning_path_course->add_field("id", XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, XMLDB_SEQUENCE, null, null, null);
-        $sga_learning_path_course->add_field("learningpathid", XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, null, null, null);
-        $sga_learning_path_course->add_field("courseid", XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, null, null, null);
-        $sga_learning_path_course->add_field("timecreated", XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, null, null, null);
-        $sga_learning_path_course->add_field("timemodified", XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, null, null, null);
-        $sga_learning_path_course->add_field("visible", XMLDB_TYPE_INTEGER, '1', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, null, null, null);
-        $sga_learning_path_course->add_field("sortorder", XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, null, null, null);
+    $sgalearningpathcourse = new \xmldb_table("sga_learning_path_course");
+    if (!$dbman->table_exists($sgalearningpathcourse)) {
+        $sgalearningpathcourse->add_field(
+            "id",
+            XMLDB_TYPE_INTEGER,
+            '10',
+            XMLDB_UNSIGNED,
+            XMLDB_NOTNULL,
+            XMLDB_SEQUENCE,
+            null,
+            null,
+            null
+        );
+        $sgalearningpathcourse->add_field(
+            "learningpathid",
+            XMLDB_TYPE_INTEGER,
+            '10',
+            XMLDB_UNSIGNED,
+            XMLDB_NOTNULL,
+            null,
+            null,
+            null,
+            null
+        );
+        $sgalearningpathcourse->add_field(
+            "courseid",
+            XMLDB_TYPE_INTEGER,
+            '10',
+            XMLDB_UNSIGNED,
+            XMLDB_NOTNULL,
+            null,
+            null,
+            null,
+            null
+        );
+        $sgalearningpathcourse->add_field(
+            "timecreated",
+            XMLDB_TYPE_INTEGER,
+            '10',
+            XMLDB_UNSIGNED,
+            XMLDB_NOTNULL,
+            null,
+            null,
+            null,
+            null
+        );
+        $sgalearningpathcourse->add_field(
+            "timemodified",
+            XMLDB_TYPE_INTEGER,
+            '10',
+            XMLDB_UNSIGNED,
+            XMLDB_NOTNULL,
+            null,
+            null,
+            null,
+            null
+        );
+        $sgalearningpathcourse->add_field(
+            "visible",
+            XMLDB_TYPE_INTEGER,
+            '1',
+            XMLDB_UNSIGNED,
+            XMLDB_NOTNULL,
+            null,
+            null,
+            null,
+            null
+        );
+        $sgalearningpathcourse->add_field(
+            "sortorder",
+            XMLDB_TYPE_INTEGER,
+            '10',
+            XMLDB_UNSIGNED,
+            XMLDB_NOTNULL,
+            null,
+            null,
+            null,
+            null
+        );
 
-        $sga_learning_path_course->add_key("primary", XMLDB_KEY_PRIMARY, ["id"], null, null);
-        $sga_learning_path_course->add_key("learningpathid", XMLDB_KEY_FOREIGN, ["learningpathid"], "sga_learning_path", ["id"]);
-        $sga_learning_path_course->add_key("courseid", XMLDB_KEY_FOREIGN, ["courseid"], "course", ["id"]);
+        $sgalearningpathcourse->add_key("primary", XMLDB_KEY_PRIMARY, ["id"], null, null);
+        $sgalearningpathcourse->add_key("learningpathid", XMLDB_KEY_FOREIGN, ["learningpathid"], "sga_learning_path", ["id"]);
+        $sgalearningpathcourse->add_key("courseid", XMLDB_KEY_FOREIGN, ["courseid"], "course", ["id"]);
 
-        $dbman->create_table($sga_learning_path_course);
+        $dbman->create_table($sgalearningpathcourse);
     }
 
     $table = new \xmldb_table('sga_relatorio_cursos_autoinstrucionais');

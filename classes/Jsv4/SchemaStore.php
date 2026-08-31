@@ -16,10 +16,24 @@
 
 namespace Jsv4;
 
-
+/**
+ * Stores and resolves JSON Schema (draft v4) documents by URL, including $ref resolution.
+ *
+ * @package     tool_sga
+ * @copyright   2020 Kelson Medeiros <kelsoncm@gmail.com>
+ * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class SchemaStore
 {
-    private static function pointerGet(&$value, $path = "", $strict = false) {
+    /**
+     * Resolves a JSON pointer path within a value.
+     *
+     * @param mixed $value the value to look up, passed by reference.
+     * @param string $path the JSON pointer path.
+     * @param bool $strict whether to throw when the path does not exist.
+     * @return mixed the resolved value, or null when not found and not strict.
+     */
+    private static function pointerget(&$value, $path = "", $strict = false) {
         if ($path == "") {
             return $value;
         } else if ($path[0] != "/") {
@@ -50,7 +64,13 @@ class SchemaStore
     }
 
 
-    private static function isNumericArray($array) {
+    /**
+     * Checks whether an array is a sequential numeric array.
+     *
+     * @param array $array the array to check.
+     * @return bool true when the array is sequential.
+     */
+    private static function isnumericarray($array) {
         $count = count($array);
         for ($i = 0; $i < $count; $i++) {
             if (!isset($array[$i])) {
@@ -61,154 +81,189 @@ class SchemaStore
     }
 
 
-    private static function resolveUrl($base, $relative) {
+    /**
+     * Resolves a relative URL against a base URL.
+     *
+     * @param string $base the base URL.
+     * @param string $relative the relative URL.
+     * @return string the resolved absolute URL.
+     */
+    private static function resolveurl($base, $relative) {
         if (parse_url($relative, PHP_URL_SCHEME) != '') {
-            // It's already absolute
+            // It's already absolute.
             return $relative;
         }
-        $baseParts = parse_url($base);
+        $baseparts = parse_url($base);
         if ($relative[0] == "?") {
-            $baseParts['query'] = substr($relative, 1);
-            unset($baseParts['fragment']);
+            $baseparts['query'] = substr($relative, 1);
+            unset($baseparts['fragment']);
         } else if ($relative[0] == "#") {
-            $baseParts['fragment'] = substr($relative, 1);
+            $baseparts['fragment'] = substr($relative, 1);
         } else if ($relative[0] == "/") {
             if ($relative[1] == "/") {
-                return $baseParts['scheme'] . $relative;
+                return $baseparts['scheme'] . $relative;
             }
-            $baseParts['path'] = $relative;
-            unset($baseParts['query']);
-            unset($baseParts['fragment']);
+            $baseparts['path'] = $relative;
+            unset($baseparts['query']);
+            unset($baseparts['fragment']);
         } else {
-            $basePathParts       = explode("/", $baseParts['path']);
-            $relativePathParts   = explode("/", $relative);
-            array_pop($basePathParts);
-            while (count($relativePathParts)) {
-                if ($relativePathParts[0] == "..") {
-                    array_shift($relativePathParts);
-                    if (count($basePathParts)) {
-                        array_pop($basePathParts);
+            $basepathparts       = explode("/", $baseparts['path']);
+            $relativepathparts   = explode("/", $relative);
+            array_pop($basepathparts);
+            while (count($relativepathparts)) {
+                if ($relativepathparts[0] == "..") {
+                    array_shift($relativepathparts);
+                    if (count($basepathparts)) {
+                        array_pop($basepathparts);
                     }
-                } else if ($relativePathParts[0] == ".") {
-                    array_shift($relativePathParts);
+                } else if ($relativepathparts[0] == ".") {
+                    array_shift($relativepathparts);
                 } else {
-                    array_push($basePathParts, array_shift($relativePathParts));
+                    array_push($basepathparts, array_shift($relativepathparts));
                 }
             }
-            $baseParts['path'] = implode("/", $basePathParts);
-            if ($baseParts['path'][0] != '/') {
-                $baseParts['path'] = "/" . $baseParts['path'];
+            $baseparts['path'] = implode("/", $basepathparts);
+            if ($baseparts['path'][0] != '/') {
+                $baseparts['path'] = "/" . $baseparts['path'];
             }
         }
 
         $result = "";
-        if (isset($baseParts['scheme'])) {
-            $result .= $baseParts['scheme'] . "://";
-            if (isset($baseParts['user'])) {
-                $result .= ":" . $baseParts['user'];
-                if (isset($baseParts['pass'])) {
-                    $result .= ":" . $baseParts['pass'];
+        if (isset($baseparts['scheme'])) {
+            $result .= $baseparts['scheme'] . "://";
+            if (isset($baseparts['user'])) {
+                $result .= ":" . $baseparts['user'];
+                if (isset($baseparts['pass'])) {
+                    $result .= ":" . $baseparts['pass'];
                 }
                 $result .= "@";
             }
-            $result .= $baseParts['host'];
-            if (isset($baseParts['port'])) {
-                $result .= ":" . $baseParts['port'];
+            $result .= $baseparts['host'];
+            if (isset($baseparts['port'])) {
+                $result .= ":" . $baseparts['port'];
             }
         }
-        $result .= $baseParts["path"];
-        if (isset($baseParts['query'])) {
-            $result .= "?" . $baseParts['query'];
+        $result .= $baseparts["path"];
+        if (isset($baseparts['query'])) {
+            $result .= "?" . $baseparts['query'];
         }
-        if (isset($baseParts['fragment'])) {
-            $result .= "#" . $baseParts['fragment'];
+        if (isset($baseparts['fragment'])) {
+            $result .= "#" . $baseparts['fragment'];
         }
         return $result;
     }
 
 
+    /** @var array<string, mixed> schemas indexed by their resolved URL. */
     private $schemas = [];
+    /** @var array<string, array> pending unresolved $ref schemas, indexed by base URL. */
     private $refs    = [];
 
+    /**
+     * Returns the list of base URLs with unresolved schema references.
+     *
+     * @return string[] the base URLs still missing.
+     */
     public function missing() {
         return array_keys($this->refs);
     }
 
-
+    /**
+     * Adds a schema to the store, normalizing and resolving its references.
+     *
+     * @param string $url the schema URL.
+     * @param mixed $schema the schema, passed by reference.
+     * @param bool $trusted whether nested schema ids should be trusted regardless of prefix.
+     * @return void
+     */
     public function add($url, $schema, $trusted = false) {
-        $urlParts    = explode("#", $url);
-        $baseUrl     = array_shift($urlParts);
-        $fragment    = urldecode(implode("#", $urlParts));
+        $urlparts    = explode("#", $url);
+        $baseurl     = array_shift($urlparts);
+        $fragment    = urldecode(implode("#", $urlparts));
 
-        $trustBase   = explode("?", $baseUrl);
-        $trustBase   = $trustBase[0];
+        $trustbase   = explode("?", $baseurl);
+        $trustbase   = $trustbase[0];
 
         $this->schemas[$url] = & $schema;
-        $this->normalizeSchema($url, $schema, $trusted ? true : $trustBase);
+        $this->normalizeschema($url, $schema, $trusted ? true : $trustbase);
         if ($fragment == "") {
-            $this->schemas[$baseUrl] = $schema;
+            $this->schemas[$baseurl] = $schema;
         }
-        if (isset($this->refs[$baseUrl])) {
-            foreach ($this->refs[$baseUrl] as $fullUrl => $refSchemas) {
-                foreach ($refSchemas as &$refSchema) {
-                    $refSchema = $this->get($fullUrl);
+        if (isset($this->refs[$baseurl])) {
+            foreach ($this->refs[$baseurl] as $fullurl => $refschemas) {
+                foreach ($refschemas as &$refschema) {
+                    $refschema = $this->get($fullurl);
                 }
-                unset($this->refs[$baseUrl][$fullUrl]);
+                unset($this->refs[$baseurl][$fullurl]);
             }
-            if (isset($this->refs[$baseUrl]) && count($this->refs[$baseUrl]) === 0) {
-                unset($this->refs[$baseUrl]);
+            if (isset($this->refs[$baseurl]) && count($this->refs[$baseurl]) === 0) {
+                unset($this->refs[$baseurl]);
             }
         }
     }
 
 
-    private function normalizeSchema($url, &$schema, $trustPrefix = '') {
-        if (is_array($schema) && !self::isNumericArray($schema)) {
+    /**
+     * Recursively normalizes a schema, resolving "id" and "$ref" against the base URL.
+     *
+     * @param string $url the base URL used to resolve relative references.
+     * @param mixed $schema the schema, passed by reference.
+     * @param string|bool $trustprefix URL prefix trusted for embedded schema ids, or true to trust all.
+     * @return void
+     */
+    private function normalizeschema($url, &$schema, $trustprefix = '') {
+        if (is_array($schema) && !self::isnumericarray($schema)) {
             $schema = (object) $schema;
         }
         if (is_object($schema)) {
             if (isset($schema->{'$ref'})) {
-                $refUrl              = $schema->{'$ref'}     = self::resolveUrl($url, $schema->{'$ref'});
-                if ($refSchema           = $this->get($refUrl)) {
-                    $schema = $refSchema;
+                $refurl              = $schema->{'$ref'}     = self::resolveurl($url, $schema->{'$ref'});
+                if ($refschema           = $this->get($refurl)) {
+                    $schema = $refschema;
                     return;
                 } else {
-                    $urlParts                        = explode("#", $refUrl);
-                    $baseUrl                         = array_shift($urlParts);
-                    $fragment                        = urldecode(implode("#", $urlParts));
-                    $this->refs[$baseUrl][$refUrl][] = & $schema;
+                    $urlparts                        = explode("#", $refurl);
+                    $baseurl                         = array_shift($urlparts);
+                    $fragment                        = urldecode(implode("#", $urlparts));
+                    $this->refs[$baseurl][$refurl][] = & $schema;
                 }
             } else if (isset($schema->id) && is_string($schema->id)) {
-                $schema->id  = $url      = self::resolveUrl($url, $schema->id);
-                $regex       = '/^' . preg_quote($trustPrefix, '/') . '(?:[#\/?].*)?$/';
-                if (($trustPrefix === true || preg_match($regex, $schema->id)) && !isset($this->schemas[$schema->id])) {
+                $schema->id  = $url      = self::resolveurl($url, $schema->id);
+                $regex       = '/^' . preg_quote($trustprefix, '/') . '(?:[#\/?].*)?$/';
+                if (($trustprefix === true || preg_match($regex, $schema->id)) && !isset($this->schemas[$schema->id])) {
                     $this->add($schema->id, $schema);
                 }
             }
             foreach ($schema as $key => &$value) {
                 if ($key != "enum") {
-                    self::normalizeSchema($url, $value, $trustPrefix);
+                    self::normalizeschema($url, $value, $trustprefix);
                 }
             }
         } else if (is_array($schema)) {
             foreach ($schema as &$value) {
-                self::normalizeSchema($url, $value, $trustPrefix);
+                self::normalizeschema($url, $value, $trustprefix);
             }
         }
     }
 
 
+    /**
+     * Returns a stored schema, or a fragment resolved from it via JSON pointer.
+     *
+     * @param string $url the schema URL, optionally with a "#/json/pointer" fragment.
+     * @return mixed the resolved schema, or null when not found.
+     */
     public function get($url) {
         if (isset($this->schemas[$url])) {
             return $this->schemas[$url];
         }
-        $urlParts    = explode("#", $url);
-        $baseUrl     = array_shift($urlParts);
-        $fragment    = urldecode(implode("#", $urlParts));
-        if (isset($this->schemas[$baseUrl])) {
-            $schema = $this->schemas[$baseUrl];
+        $urlparts    = explode("#", $url);
+        $baseurl     = array_shift($urlparts);
+        $fragment    = urldecode(implode("#", $urlparts));
+        if (isset($this->schemas[$baseurl])) {
+            $schema = $this->schemas[$baseurl];
             if ($schema && $fragment == "" || $fragment[0] == "/") {
-                $schema = self::pointerGet($schema, $fragment);
+                $schema = self::pointerget($schema, $fragment);
                 $this->add($url, $schema);
                 return $schema;
             }
