@@ -79,8 +79,9 @@ class sync_up_enrolments_service extends service {
         global $CFG;
         $jsonstring = file_get_contents('php://input');
 
+        $id = $this->insertsyncdb($jsonstring);
+        \tool_sga\audit::set_context('api:sga', "sga_enrolment_to_sync:$id");
         $result = $this->process($jsonstring, true);
-        $this->insertsyncdb($jsonstring);
 
         return $result;
     }
@@ -268,14 +269,14 @@ class sync_up_enrolments_service extends service {
                     unset($data['user_preferences']);
                     unset($data['custom_fields']);
 
-                    \user_create_user($data, ($password != AUTH_PASSWORD_NOT_CACHED));
+                    \tool_sga\audit::create_user($data, ($password != AUTH_PASSWORD_NOT_CACHED));
 
                     $ondb = $this->get_cached('user', 'username', $user->naturalkey);
 
                     $ondb->is_new = true;
 
                     foreach ($user->user_preferences ?? [] as $key => $value) {
-                        \set_user_preference($key, $value, $ondb);
+                        \tool_sga\audit::set_preference($key, $value, $ondb);
                     }
                 } else if (isset($this->json->users->update_fields)) {
                     $data = $this->set_updatable_fields($user, [], $this->json->users->update_fields);
@@ -287,14 +288,14 @@ class sync_up_enrolments_service extends service {
                         }
 
                         $data['id'] = $ondb->id;
-                        \user_update_user($data);
+                        \tool_sga\audit::update_user($data);
                         unset($this->users[$user->username]);
                         $ondb = $this->get_cached('user', 'username', $user->naturalkey);
                     }
                 }
 
                 if (isset($user->custom_fields)) {
-                    \profile_save_custom_fields($ondb->id, (array)($user->custom_fields));
+                    \tool_sga\audit::save_profile_fields((int) $ondb->id, (array)($user->custom_fields));
                 }
 
                 if (isset($user->picture) && !empty($user->picture) && $user->picture != $ondb->picture) {
@@ -304,7 +305,7 @@ class sync_up_enrolments_service extends service {
                     $fs->delete_area_files($usercontext->id, 'user', 'icon');
                     $user->picture = \profile_save_data($usercontext, 'icon', $user->picture);
                     $ondb->picture = $user->picture;
-                    $DB->update_record('user', (object)['id' => $ondb->id, 'picture' => $ondb->picture]);
+                    \tool_sga\audit::set_picture((int) $ondb->id, $ondb->picture);
                 }
 
                 $this->urls['users'][$user->naturalkey] = "{$CFG->wwwroot}/user/view.php?id={$ondb->id}";
@@ -337,7 +338,7 @@ class sync_up_enrolments_service extends service {
                     $data = $this->set_updatable_fields($tosync, [], $this->json->cohorts->update_fields);
                     if (count($data) > 0) {
                         $data['id'] = $ondb->id;
-                        \cohort_update_cohort($instance);
+                        \cohort_update_cohort((object) $data);
                         $ondb = $DB->get_record('cohort', ['id' => $ondb->id]);
                     }
                 }
@@ -462,7 +463,7 @@ class sync_up_enrolments_service extends service {
 
                     if (count($data) > 0) {
                         $data['id'] = $ondb->id;
-                        $enrolplugin->update_instance($ondb, $data);
+                        \groups_update_group((object) $data);
                         $ondb = $DB->get_record('groups', ['id' => $ondb->id]);
                         $this->cache[$type][$tosync->naturalkey] = $ondb;
                     }
@@ -556,12 +557,12 @@ class sync_up_enrolments_service extends service {
      * Records the raw request JSON for later inspection.
      *
      * @param string $jsonstring the raw JSON request body.
-     * @return void
+     * @return int the id of the recorded request.
      */
     public function insertsyncdb($jsonstring) {
         global $DB;
 
-        $DB->insert_record(
+        return $DB->insert_record(
             "sga_enrolment_to_sync",
             (object)[
                 'json' => $jsonstring,
