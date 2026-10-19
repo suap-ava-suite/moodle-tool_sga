@@ -187,3 +187,12 @@ posteriormente para ``1`` (sucesso) ou ``2`` (falha), apesar de ``admin/index.ph
 ``admin/view.php`` já traduzirem esses três valores para os rótulos "Não processado",
 "Sucesso" e "Falha" — na prática, todo registro aparece hoje como "Não processado". Veja
 :doc:`painel-administrativo`.
+
+Auditoria das alterações
+------------------------
+
+Com o ``local_suap`` instalado, as escritas de usuário desta sincronização (criação, atualização,
+perfil, preferências e foto) são registradas em ``local_suap_user_audit`` com o ator ``api:sga`` e a
+referência ``sga_enrolment_to_sync:<id>`` da requisição, com diff por campo. ``insertSyncDB()`` agora
+retorna o id e grava a requisição **antes** de processá-la. Sem o ``local_suap`` o comportamento é o
+mesmo de antes (``classes/audit.php``).
