@@ -187,3 +187,11 @@ field to ``1`` (success) or ``2`` (failure), even though ``admin/index.php`` and
 ``admin/view.php`` already translate these three values into the labels "Não processado",
 "Sucesso" and "Falha" — in practice, every record currently shows as "Não processado". See
 :doc:`painel-administrativo`.
+
+Change audit
+------------
+
+With ``local_suap`` installed, the user writes of this sync (create, update, profile, preferences and
+picture) are recorded in ``local_suap_user_audit`` with actor ``api:sga`` and the request reference
+``sga_enrolment_to_sync:<id>``, with a per-field diff. ``insertSyncDB()`` now returns the id and stores the
+request **before** processing it. Without ``local_suap`` behaviour is unchanged (``classes/audit.php``).
